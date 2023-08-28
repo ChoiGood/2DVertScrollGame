@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
     public GameObject bulletObjA;
     public GameObject bulletObjB;
 
+    public GameManager manager;
+
     Animator anim;
 
     void Awake()
@@ -129,6 +131,12 @@ public class Player : MonoBehaviour
                     break;
 
             }
+        }
+        else if (collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "EnemyBullet")
+        {
+            manager.RespawnPlayer();
+            gameObject.SetActive(false);
+
         }
     }
 

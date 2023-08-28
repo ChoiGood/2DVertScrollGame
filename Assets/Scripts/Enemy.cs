@@ -5,18 +5,69 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     // 적 비행기의 구성 요소를 변수로 구체화
+    public string enemyName;
     public float speed;
     public int health;
     public Sprite[] sprites;
 
+    public float maxShotDelay;
+    public float curShotDelay;
+
+    public GameObject bulletObjA;
+    public GameObject bulletObjB;
+    public GameObject player;
+
     SpriteRenderer spriteRenderer;
-    Rigidbody2D rigid;
+    
 
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        rigid = GetComponent<Rigidbody2D>();
-        rigid.velocity = Vector2.down * speed;      // 이번에는  AddForce 대신 velocity 값을 바로 할당하여 속도부여.
+      
+    }
+
+    void Update()
+    {
+        Fire();
+        Reload();
+    }
+
+    void Fire()
+    {
+        if (curShotDelay < maxShotDelay)
+            return;
+
+        if(enemyName == "S")
+        {
+            GameObject bullet = Instantiate(bulletObjA, transform.position, transform.rotation);
+            Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
+            // 플레이어에게 쏘기 위해 플레이어 변수가 필요
+            Vector3 dirVec = player.transform.position - transform.position;
+            rigid.AddForce(dirVec.normalized * 3, ForceMode2D.Impulse);
+        }
+        else if (enemyName == "L")
+        {
+            GameObject bulletR = Instantiate(bulletObjB, transform.position + Vector3.right * 0.3f, transform.rotation);
+            GameObject bulletL = Instantiate(bulletObjA, transform.position + Vector3.left * 0.3f, transform.rotation);
+
+            Rigidbody2D rigidR = bulletR.GetComponent<Rigidbody2D>();
+            Rigidbody2D rigidL = bulletL.GetComponent<Rigidbody2D>();
+
+            Vector3 dirVecR = player.transform.position - (transform.position + Vector3.right * 0.3f);
+            Vector3 dirVecL = player.transform.position - (transform.position + Vector3.left * 0.3f);
+
+            rigidR.AddForce(dirVecR.normalized * 4, ForceMode2D.Impulse);
+            rigidL.AddForce(dirVecL.normalized * 4, ForceMode2D.Impulse);
+        }
+
+
+
+        curShotDelay = 0;       // 총알을 쏜 다음에는 딜레이 변수 0으로 초기화
+    }
+
+    void Reload()
+    {
+        curShotDelay += Time.deltaTime;
     }
 
     void OnHit(int dmg)
