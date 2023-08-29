@@ -6,6 +6,7 @@ public class Enemy : MonoBehaviour
 {
     // 적 비행기의 구성 요소를 변수로 구체화
     public string enemyName;
+    public int enemyScore;
     public float speed;
     public int health;
     public Sprite[] sprites;
@@ -78,6 +79,8 @@ public class Enemy : MonoBehaviour
 
         if(health <= 0)
         {
+            Player playerLogic = player.GetComponent<Player>(); // ?? 지금은 게임 오브젝트이기 때문에 바로 못넘긴다?? 이게 정확히 무엇을 뜻하는 걸까?? 
+            playerLogic.score += enemyScore;                   // 일단 이건 스크립트를 가져오는 거군...
             Destroy(gameObject);
         }
     }
