@@ -182,4 +182,7 @@ MonoBehaviour:
   curShotDelay: 0
   bulletObjA: {fileID: 6806038565266984085, guid: 7e6692b414b2dae4eafa089aa1a0d225, type: 3}
   bulletObjB: {fileID: 6806038565266984085, guid: a98b0a3a8c831be49bc947eee762b9ad, type: 3}
+  itemCoin: {fileID: 2648632192108795135, guid: 22d92fa6d34f4b24ba2b2429da0e754f, type: 3}
+  itemPower: {fileID: 3166522658709857791, guid: 232623e5be6c0a44d8a2287d38a43a2b, type: 3}
+  itemBoom: {fileID: 1852192368621775977, guid: 2e64d7fc2401f854094fe80d719ce098, type: 3}
   player: {fileID: 0}

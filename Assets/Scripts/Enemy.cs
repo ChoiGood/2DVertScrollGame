@@ -16,6 +16,9 @@ public class Enemy : MonoBehaviour
 
     public GameObject bulletObjA;
     public GameObject bulletObjB;
+    public GameObject itemCoin;
+    public GameObject itemPower;
+    public GameObject itemBoom;
     public GameObject player;
 
     SpriteRenderer spriteRenderer;
@@ -71,8 +74,11 @@ public class Enemy : MonoBehaviour
         curShotDelay += Time.deltaTime;
     }
 
-    void OnHit(int dmg)
+    public void OnHit(int dmg)
     {
+        if (health <= 0)
+            return;
+
         health -= dmg;
         spriteRenderer.sprite = sprites[1];
         Invoke("ReturnSprite", 0.1f);       // 바꾼 스프라이트를 돌리기 위해 시간차 함수 호출
@@ -81,6 +87,26 @@ public class Enemy : MonoBehaviour
         {
             Player playerLogic = player.GetComponent<Player>(); // ?? 지금은 게임 오브젝트이기 때문에 바로 못넘긴다?? 이게 정확히 무엇을 뜻하는 걸까?? 
             playerLogic.score += enemyScore;                   // 일단 이건 스크립트를 가져오는 거군...
+
+            //#.Random Ratio Item Drop
+            int ran = Random.Range(0, 10);
+            if(ran < 5)
+            {
+                Debug.Log("Not Item");
+            }
+            else if (ran < 8)   // Coin
+            {
+                Instantiate(itemCoin, transform.position, itemCoin.transform.rotation);
+            }
+            else if (ran < 9)   // Power
+            {
+                Instantiate(itemPower, transform.position, itemPower.transform.rotation);
+            }
+            else if (ran < 10)   // Boom
+            {
+                Instantiate(itemBoom, transform.position, itemBoom.transform.rotation);
+            }
+
             Destroy(gameObject);
         }
     }
