@@ -20,6 +20,7 @@ public class Enemy : MonoBehaviour
     public GameObject itemPower;
     public GameObject itemBoom;
     public GameObject player;
+    public ObjectManager objectManager;
 
     SpriteRenderer spriteRenderer;
     
@@ -43,7 +44,9 @@ public class Enemy : MonoBehaviour
 
         if(enemyName == "S")
         {
-            GameObject bullet = Instantiate(bulletObjA, transform.position, transform.rotation);
+            GameObject bullet = objectManager.MakeObj("BulletEnemyA");
+            bullet.transform.position = transform.position;
+                
             Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
             // 플레이어에게 쏘기 위해 플레이어 변수가 필요
             Vector3 dirVec = player.transform.position - transform.position;
@@ -51,8 +54,13 @@ public class Enemy : MonoBehaviour
         }
         else if (enemyName == "L")
         {
-            GameObject bulletR = Instantiate(bulletObjB, transform.position + Vector3.right * 0.3f, transform.rotation);
-            GameObject bulletL = Instantiate(bulletObjA, transform.position + Vector3.left * 0.3f, transform.rotation);
+            GameObject bulletR = objectManager.MakeObj("BulletEnemyB");
+            bulletR.transform.position = transform.position + Vector3.right * 0.3f;
+
+            GameObject bulletL = objectManager.MakeObj("BulletEnemyB");
+            bulletL.transform.position = transform.position + Vector3.left * 0.3f;
+
+
 
             Rigidbody2D rigidR = bulletR.GetComponent<Rigidbody2D>();
             Rigidbody2D rigidL = bulletL.GetComponent<Rigidbody2D>();
@@ -96,18 +104,21 @@ public class Enemy : MonoBehaviour
             }
             else if (ran < 8)   // Coin
             {
-                Instantiate(itemCoin, transform.position, itemCoin.transform.rotation);
+                GameObject itemCoin = objectManager.MakeObj("ItemCoin");
+                itemCoin.transform.position = transform.position;
             }
             else if (ran < 9)   // Power
             {
-                Instantiate(itemPower, transform.position, itemPower.transform.rotation);
+                GameObject itemPower = objectManager.MakeObj("ItemPower");
+                itemPower.transform.position = transform.position;
             }
             else if (ran < 10)   // Boom
             {
-                Instantiate(itemBoom, transform.position, itemBoom.transform.rotation);
+                GameObject itemBoom = objectManager.MakeObj("ItemBoom");
+                itemBoom.transform.position = transform.position;
             }
 
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 
@@ -120,13 +131,13 @@ public class Enemy : MonoBehaviour
     {
         // 총알과 마찬가지로 바깥으로 나간 후에는 삭제
         if(collision.gameObject.tag == "BorderBullet")
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         else if(collision.gameObject.tag == "PlayerBullet")
         {
             Bullet bullet = collision.gameObject.GetComponent<Bullet>();
             OnHit(bullet.dmg);
 
-            Destroy(collision.gameObject);
+            gameObject.SetActive(false);
         }
 
         
