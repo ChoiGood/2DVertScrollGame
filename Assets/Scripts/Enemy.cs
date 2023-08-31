@@ -37,6 +37,22 @@ public class Enemy : MonoBehaviour
         Reload();
     }
 
+    void OnEnable()
+    {
+        switch(enemyName)
+        {
+            case "L":
+                health = 40;
+                break;
+            case "M":
+                health = 10;
+                break;
+            case "S":
+                health = 3;
+                break;
+        }
+    }
+
     void Fire()
     {
         if (curShotDelay < maxShotDelay)
@@ -106,19 +122,23 @@ public class Enemy : MonoBehaviour
             {
                 GameObject itemCoin = objectManager.MakeObj("ItemCoin");
                 itemCoin.transform.position = transform.position;
+             
             }
             else if (ran < 9)   // Power
             {
                 GameObject itemPower = objectManager.MakeObj("ItemPower");
                 itemPower.transform.position = transform.position;
+              
             }
             else if (ran < 10)   // Boom
             {
                 GameObject itemBoom = objectManager.MakeObj("ItemBoom");
                 itemBoom.transform.position = transform.position;
+              
             }
 
             gameObject.SetActive(false);
+            transform.rotation = Quaternion.identity;
         }
     }
 
@@ -131,13 +151,16 @@ public class Enemy : MonoBehaviour
     {
         // 총알과 마찬가지로 바깥으로 나간 후에는 삭제
         if(collision.gameObject.tag == "BorderBullet")
+        {
             gameObject.SetActive(false);
+            transform.rotation = Quaternion.identity;
+        }          
         else if(collision.gameObject.tag == "PlayerBullet")
         {
             Bullet bullet = collision.gameObject.GetComponent<Bullet>();
             OnHit(bullet.dmg);
 
-            gameObject.SetActive(false);
+            collision.gameObject.SetActive(false);
         }
 
         

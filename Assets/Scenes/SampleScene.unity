@@ -2862,7 +2862,7 @@ MonoBehaviour:
   - {fileID: 1440271455}
   - {fileID: 1937581790}
   gameOverSet: {fileID: 675671581}
-  objectManager: {fileID: 0}
+  objectManager: {fileID: 582414819}
 --- !u!4 &1569131112
 Transform:
   m_ObjectHideFlags: 0

@@ -66,7 +66,6 @@ public class ObjectManager : MonoBehaviour
             enemyM[i].SetActive(false);
         }
             
-
         for (int i = 0; i < enemyS.Length; i++)
         {
             enemyS[i] = Instantiate(enemySPrefab);
@@ -87,7 +86,6 @@ public class ObjectManager : MonoBehaviour
             itemPower[i].SetActive(false);
         }
         
-
         for (int i = 0; i < itemBoom.Length; i++)
         {
             itemBoom[i] = Instantiate(itemBoomPrefab);
@@ -134,25 +132,25 @@ public class ObjectManager : MonoBehaviour
             case "EnemyS":
                 targetPool = enemyS;
                 break;
-            case "itemCoin":
+            case "ItemCoin":
                 targetPool = itemCoin;
                 break;
-            case "itemPower":
+            case "ItemPower":
                 targetPool = itemPower;
                 break;
-            case "itemBoom":
+            case "ItemBoom":
                 targetPool = itemBoom;
                 break;
-            case "bulletPlayerA":
+            case "BulletPlayerA":
                 targetPool = bulletPlayerA;
                 break;
-            case "bulletPlayerB":
+            case "BulletPlayerB":
                 targetPool = bulletPlayerB;
                 break;
-            case "bulletEnemyA":
+            case "BulletEnemyA":
                 targetPool = bulletEnemyA;
                 break;
-            case "bulletEnemyB":
+            case "BulletEnemyB":
                 targetPool = bulletEnemyB;
                 break;
         }
@@ -167,5 +165,44 @@ public class ObjectManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    public GameObject[] GetPool (string type)
+    {
+        switch (type)
+        {
+            case "EnemyL":
+                targetPool = enemyL;
+                break;
+            case "EnemyM":
+                targetPool = enemyM;
+                break;
+            case "EnemyS":
+                targetPool = enemyS;
+                break;
+            case "ItemCoin":
+                targetPool = itemCoin;
+                break;
+            case "ItemPower":
+                targetPool = itemPower;
+                break;
+            case "ItemBoom":
+                targetPool = itemBoom;
+                break;
+            case "BulletPlayerA":
+                targetPool = bulletPlayerA;
+                break;
+            case "BulletPlayerB":
+                targetPool = bulletPlayerB;
+                break;
+            case "BulletEnemyA":
+                targetPool = bulletEnemyA;
+                break;
+            case "BulletEnemyB":
+                targetPool = bulletEnemyB;
+                break;
+        }
+
+        return targetPool;
     }
 }

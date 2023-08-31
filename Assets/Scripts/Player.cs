@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -153,19 +154,53 @@ public class Player : MonoBehaviour
         boomEffect.SetActive(true);
         Invoke("OffBoomEffect", 4f);
         //#2.Remove Enemy
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        for (int i = 0; i < enemies.Length; i++)
+        GameObject[] enemiesL = objectManager.GetPool("EnemyL");
+        GameObject[] enemiesM = objectManager.GetPool("EnemyM");
+        GameObject[] enemiesS = objectManager.GetPool("EnemyS");
+
+        for (int i = 0; i < enemiesL.Length; i++)
         {
-            Enemy enemyLogic = enemies[i].GetComponent<Enemy>();
-            enemyLogic.OnHit(1000);
+            if (enemiesL[i].activeSelf)
+            {
+                Enemy enemyLogic = enemiesL[i].GetComponent<Enemy>();
+                enemyLogic.OnHit(1000);
+            }
+        }
+        for (int i = 0; i < enemiesM.Length; i++)
+        {
+            if (enemiesM[i].activeSelf)
+            {
+                Enemy enemyLogic = enemiesM[i].GetComponent<Enemy>();
+                enemyLogic.OnHit(1000);
+            }
+        }
+        for (int i = 0; i < enemiesS.Length; i++)
+        {
+            if (enemiesS[i].activeSelf)
+            {
+                Enemy enemyLogic = enemiesS[i].GetComponent<Enemy>();
+                enemyLogic.OnHit(1000);
+            }
         }
 
         //#3.Remove Enemy Bullet
-        GameObject[] bullets = GameObject.FindGameObjectsWithTag("EnemyBullet");
-        for (int i = 0; i < bullets.Length; i++)
+        GameObject[] bulletsA = objectManager.GetPool("BulletEnemyA");
+        GameObject[] bulletsB = objectManager.GetPool("BulletEnemyB");
+        for(int i = 0; i < bulletsA.Length;i++)
         {
-            Destroy(bullets[i]);
+            if (bulletsA[i].activeSelf)
+            {
+                bulletsA[i].SetActive(false);
+            }
         }
+        for (int i = 0; i < bulletsB.Length; i++)
+        {
+            if (bulletsB[i].activeSelf)
+            {
+                bulletsB[i].SetActive(false);
+            }
+        }
+
 
 
     }
@@ -213,7 +248,7 @@ public class Player : MonoBehaviour
             }
             
             gameObject.SetActive(false);
-            Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
 
         }
         else if(collision.gameObject.tag == "Item")
@@ -241,7 +276,7 @@ public class Player : MonoBehaviour
                       
                     break;
             }
-            Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
         }
     }
 
