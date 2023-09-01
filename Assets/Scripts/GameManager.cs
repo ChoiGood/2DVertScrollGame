@@ -4,13 +4,16 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.IO;
+using UnityEngine.TextCore.Text;
+
 
 public class GameManager : MonoBehaviour
 {
     public string[] enemyObjs;
     public Transform[] spawnPoints;
 
-    public float maxSpawnDelay;
+    public float nextSpawnDelay;
     public float curSpawnDelay;
 
     public GameObject player;
@@ -20,19 +23,62 @@ public class GameManager : MonoBehaviour
     public GameObject gameOverSet;
     public ObjectManager objectManager;
 
+    public List<Spawn> spawnList;
+    public int spawnIndex;
+    public bool spawnEnd;
+
     void Awake()
     {
+        spawnList = new List<Spawn>();
         enemyObjs = new string[] { "EnemyL", "EnemyM", "EnemyS" };
+        ReadSpawnFile();
+    }
+
+    void ReadSpawnFile()
+    {
+        //#1. 변수 초기화
+        spawnList.Clear();
+        spawnIndex = 0;
+        spawnEnd = false;
+
+        //#2. 리스폰 파일 열기
+        UnityEngine.TextAsset textFile = Resources.Load("Stage 0") as UnityEngine.TextAsset;
+        StringReader stringReader = new StringReader(textFile.text); ;
+
+        while(stringReader != null)
+        {
+            string line = stringReader.ReadLine();
+            Debug.Log(line);
+
+            if (line == null)
+                break;
+
+            //#.리스폰 데이터 생성
+            Spawn spawnDate = new Spawn();
+            spawnDate.delay = float.Parse(line.Split(',')[0]);
+            spawnDate.type = line.Split(',')[1];
+            spawnDate.point = int.Parse(line.Split(',')[2]);
+            spawnList.Add(spawnDate);
+        }
+
+        //#.텍스트 파일 닫기
+        stringReader.Close();
+
+        //#첫번째 스폰 딜레이 적용
+        nextSpawnDelay = spawnList[0].delay;
+
+        
+
+
     }
 
     void Update()
     {
         curSpawnDelay += Time.deltaTime;
 
-        if(curSpawnDelay > maxSpawnDelay )
+        if(curSpawnDelay > nextSpawnDelay  && !spawnEnd)
         {
             SpawnEnemy();
-            maxSpawnDelay = Random.Range(0.5f, 3f);
             curSpawnDelay = 0;      // 적 생성 후엔 꼭 딜레이 변수 0으로 초기화
         }
 
@@ -44,11 +90,26 @@ public class GameManager : MonoBehaviour
     // 랜덤으로 정해진 적 프리펩, 생성 위치로 적 기체 생성.
     void SpawnEnemy()
     {
-        int ranEnemy = Random.Range(0, 3);
-        int ranPoint = Random.Range(0, 9);
+        int enemyIndex = 0;
+        switch (spawnList[spawnIndex].type)
+        {
+            case "S":
+                enemyIndex = 2;
+                break;
+            case "M":
+                enemyIndex = 1;
+                break;
+            case "L":
+                enemyIndex = 0;
+                break;
 
-        GameObject enemy = objectManager.MakeObj(enemyObjs[ranEnemy]);
-        enemy.transform.position = spawnPoints[ranPoint].position;
+        }
+        
+
+        int enemyPoint = spawnList[spawnIndex].point;
+
+        GameObject enemy = objectManager.MakeObj(enemyObjs[enemyIndex]);
+        enemy.transform.position = spawnPoints[enemyPoint].position;
 
         Rigidbody2D rigid = enemy.GetComponent<Rigidbody2D>();
         Enemy enemyLogic = enemy.GetComponent<Enemy>();
@@ -56,12 +117,12 @@ public class GameManager : MonoBehaviour
                                         // ==> 적 생성 직후 플레이어 변수를 넘겨주는 것으로 해결가능하다!!
 
         enemyLogic.objectManager = objectManager;
-        if (ranPoint == 5 || ranPoint == 6) // #.Right Spawn
+        if (enemyPoint == 5 || enemyPoint == 6) // #.Right Spawn
         {
             enemy.transform.Rotate(Vector3.back * 45);
             rigid.velocity = new Vector2(enemyLogic.speed * (-1), -1);
         }
-        else if (ranPoint == 7 || ranPoint == 8)    // #.Left Spawn
+        else if (enemyPoint == 7 || enemyPoint == 8)    // #.Left Spawn
         {
             enemy.transform.Rotate(Vector3.forward * 45);
             rigid.velocity = new Vector2(enemyLogic.speed, -1);
@@ -70,6 +131,16 @@ public class GameManager : MonoBehaviour
         {
             rigid.velocity = new Vector2(0, enemyLogic.speed * (-1));
         }
+
+        //#.리스폰 인덱스 증가
+        spawnIndex++;
+        if(spawnIndex == spawnList.Count)
+        {
+            spawnEnd = true;
+            return;
+        }
+        //#.다음 리스폰 딜레이 갱신
+        nextSpawnDelay = spawnList[spawnIndex].delay;
     }
     public void UpdateLifeIcon(int life)
     {
