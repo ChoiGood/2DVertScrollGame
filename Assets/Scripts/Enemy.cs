@@ -155,8 +155,17 @@ public class Enemy : MonoBehaviour
     }
     void FireArc()
     {
-        Debug.Log("부채모양으로 발사");
+        //#.Fire Arc Continue Fire
+       
+        GameObject bullet = objectManager.MakeObj("BulletEnemyA");
+        bullet.transform.position = transform.position;
+        bullet.transform.rotation = Quaternion.identity;
 
+        Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
+        Vector2 dirVec = new Vector2(Mathf.Cos(Mathf.PI * 10 * curPatternCount / maxPatternCount[patternIndex]), -1);
+        rigid.AddForce(dirVec.normalized * 3, ForceMode2D.Impulse);
+        
+        //#.Pattern Counting
         curPatternCount++;
 
         if (curPatternCount < maxPatternCount[patternIndex])
@@ -166,8 +175,27 @@ public class Enemy : MonoBehaviour
     }
     void FireAround()
     {
-        Debug.Log("원 형태로 전체 공격.");
+        //#.Fire Around
+        int roundnumA = 50;
+        int roundNumB = 40;
+        int roundNum = curPatternCount % 2 == 0 ? roundnumA : roundNumB;
 
+        for(int i=0; i< roundNum; i++)
+        {
+            GameObject bullet = objectManager.MakeObj("BulletBossB");
+            bullet.transform.position = transform.position;
+            bullet.transform.rotation = Quaternion.identity;
+
+            Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
+            Vector2 dirVec = new Vector2(Mathf.Cos(Mathf.PI * 2 * i / roundNum), Mathf.Sin(Mathf.PI * 2 * i/ roundNum));
+            rigid.AddForce(dirVec.normalized * 2, ForceMode2D.Impulse);
+
+            Vector3 rotVec = Vector3.forward * 360 * i / roundNum + Vector3.forward * 90;  // 가능한 수학적 이해 가능?  90을 더해야 총알 방향을 바르게 할수 있음
+            bullet.transform.Rotate(rotVec);
+        }
+
+        
+        //#.Pattern Counting
         curPatternCount++;
 
         if (curPatternCount < maxPatternCount[patternIndex])
