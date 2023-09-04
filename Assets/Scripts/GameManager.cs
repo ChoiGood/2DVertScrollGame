@@ -118,7 +118,7 @@ public class GameManager : MonoBehaviour
         Enemy enemyLogic = enemy.GetComponent<Enemy>();
         enemyLogic.player = player;     // 프리펩은 이미 Scene에 올라온 오브젝트에 접근 불가능!! 그래서 Enemy에서 바로 player를 못받는다  
                                         // ==> 적 생성 직후 플레이어 변수를 넘겨주는 것으로 해결가능하다!!
-
+        enemyLogic.gameManager = this;  
         enemyLogic.objectManager = objectManager;
         if (enemyPoint == 5 || enemyPoint == 6) // #.Right Spawn
         {
@@ -190,6 +190,15 @@ public class GameManager : MonoBehaviour
 
         Player playerLogic = player.GetComponent<Player>();
         playerLogic.isHit = false;
+    }
+
+    public void CallExplosion(Vector3 pos, string type)
+    {
+        GameObject explosion = objectManager.MakeObj("Explosion");
+        Explosion explosionLogic = explosion.GetComponent<Explosion>();
+
+        explosion.transform.position = pos;
+        explosionLogic.StartExplosion(type);
     }
 
     public void GameOver()
