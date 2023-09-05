@@ -53,7 +53,7 @@ public class Enemy : MonoBehaviour
         switch(enemyName)
         {
             case "B":
-                health = 3000;
+                health = 200;      // For Test , Set 200
                 Invoke("Stop",2);
                 break;
             case "L":
@@ -103,6 +103,9 @@ public class Enemy : MonoBehaviour
 
     void FireFoward()
     {
+        if (health <= 0)
+            return;
+
         //#.Fire 4 Bullet Foward
         GameObject bulletR = objectManager.MakeObj("BulletBossA");
         bulletR.transform.position = transform.position + Vector3.right * 0.3f;
@@ -134,8 +137,11 @@ public class Enemy : MonoBehaviour
     }
     void FireShot()
     {
+        if (health <= 0)
+            return;
+
         //#.Fire 5 Random Shotgun Bullet to Player
-        for(int i=0; i<5; i++)
+        for (int i=0; i<5; i++)
         {
             GameObject bullet = objectManager.MakeObj("BulletEnemyB");
             bullet.transform.position = transform.position;
@@ -156,8 +162,11 @@ public class Enemy : MonoBehaviour
     }
     void FireArc()
     {
+        if (health <= 0)
+            return;
+
         //#.Fire Arc Continue Fire
-       
+
         GameObject bullet = objectManager.MakeObj("BulletEnemyA");
         bullet.transform.position = transform.position;
         bullet.transform.rotation = Quaternion.identity;
@@ -176,6 +185,9 @@ public class Enemy : MonoBehaviour
     }
     void FireAround()
     {
+        if (health <= 0)
+            return;
+
         //#.Fire Around
         int roundnumA = 50;
         int roundNumB = 40;
@@ -296,9 +308,14 @@ public class Enemy : MonoBehaviour
               
             }
 
+          
             gameObject.SetActive(false);
             transform.rotation = Quaternion.identity;
             gameManager.CallExplosion(transform.position, enemyName);
+
+            //#.Boss Kill
+            if (enemyName == "B")
+                gameManager.StageEnd();
 
         }
     }

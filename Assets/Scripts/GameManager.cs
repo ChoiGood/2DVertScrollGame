@@ -10,6 +10,12 @@ using UnityEngine.TextCore.Text;
 
 public class GameManager : MonoBehaviour
 {
+    public int stage;
+    public Animator stageAnim;
+    public Animator clearAnim;
+    public Animator fadeAnim;
+    public Transform playerPos;
+
     public string[] enemyObjs;
     public Transform[] spawnPoints;
 
@@ -31,7 +37,38 @@ public class GameManager : MonoBehaviour
     {
         spawnList = new List<Spawn>();
         enemyObjs = new string[] { "EnemyS", "EnemyM", "EnemyL", "EnemyB" };
+        StageStart();
+    }
+
+    public void StageStart()
+    {
+        //#. Stage UI Load
+        stageAnim.SetTrigger("On");
+        stageAnim.GetComponent<Text>().text = "Stage " + stage + "\nStart";
+        clearAnim.GetComponent<Text>().text = "Stage " + stage + "\nClear!!";
+        //#.Enemy Spawn File Read
         ReadSpawnFile();
+
+        //#.Fade in
+        fadeAnim.SetTrigger("In");
+    }
+
+    public void StageEnd()
+    {
+        //#.Clear UI Load
+        clearAnim.SetTrigger("On");
+
+        //#.Fade Out
+        fadeAnim.SetTrigger("Out");
+        //#.Player Repos
+        player.transform.position = playerPos.position;
+
+        //#.Stage Increament
+        stage++;
+        if (stage > 2)
+            Invoke("GameOver",6);
+        else
+            Invoke("StageStart", 5);
     }
 
     void ReadSpawnFile()
@@ -42,7 +79,7 @@ public class GameManager : MonoBehaviour
         spawnEnd = false;
 
         //#2. 리스폰 파일 열기
-        UnityEngine.TextAsset textFile = Resources.Load("Stage 0") as UnityEngine.TextAsset;
+        UnityEngine.TextAsset textFile = Resources.Load("Stage " + stage.ToString()) as UnityEngine.TextAsset;
         StringReader stringReader = new StringReader(textFile.text); ;
 
         while(stringReader != null)

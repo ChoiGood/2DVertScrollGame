@@ -349,6 +349,14 @@ public class Player : MonoBehaviour
             }
             
             gameObject.SetActive(false);
+
+            if(collision.gameObject.tag == "Enemy") // 부딪쳤는데 보스일 경우는 플레이어만 파괴
+            {
+                Enemy bossCheck = collision.gameObject.GetComponent<Enemy>();
+                if (bossCheck.enemyName == "B")
+                    return;
+            }
+
             collision.gameObject.SetActive(false);
 
         }
